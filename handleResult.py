@@ -144,37 +144,37 @@ def findSources(file):
     调用路径上的每一个方法和方法所在的method
 '''
 def getPaths(file):
+    path = Path()
+
     f = open(file,'r')
     line = f.readline()
-
+    path = None
     while line:
         if line.startswith('==========-============='):
             path = Path()
             Paths.append(path)
             path.setSink(line[line.index('The sink')+9:line.index('in method')])
-            path.setSinkMethod(line[line.index('in method')+10:line.index(' was called')])
             line = f.readline()
             if line:
                 path.setSource(line[2:line.index('in method')])
-                path.setSourceMethod(line[line.index('in method')+10:])
                 f.readline()
                 continue
             else:
                 break
-        if line.startswith('===>'):
-            path.setSinkMethod(line[line.index('===>')+4:])
-        if line.startswith('------>'):
-            path.setLeakPath(line[line.index('------>')+7:])
+        if line.startswith('===>'):#以这个字符串开头是传播语句包含所在的类和方法
+            lines = []
+            while line and (not line.startswith('==========-=============')):
+                lines.append(line)
+                line = f.readline()
+            path.handlePathNode(lines)
         line = f.readline()
-    print Paths.__len__()
 if '__main__' == __name__ :
     #smaliFiles = getallSmaliFiles(unicode(sougouPath,"utf-8"),[])
     #decode('gbk').encode('UTF-8') 打印中文
     smaliFiles = unicode(sougouPath,"utf-8")
     getPaths(smaliFiles)
-    print Paths.__len__()
-    for path in Paths:
-        print 'path----',path.getLeakPath()
+    # for path in Paths:
+    #     print 'path----',path.getLeakPath()
 
     #
     # for path in Paths:
