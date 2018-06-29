@@ -40,10 +40,10 @@ class Node:
         return self.__methodName
 
     def setParent(self,parent):
-        self.parent = parent
+        self.__parent = parent
 
     def getParent(self):
-        return self.parent
+        return self.__parent
 
     def getChildList(self):
         return self.__childList
@@ -54,3 +54,11 @@ class Node:
     def addChild(self,node):
         self.__childList.append(node)
         node.setParent(self)
+
+    def addChildList(self,nodeList):
+        self.__childList = self.__childList+nodeList
+        for node in nodeList:
+            node.setParent(self)
+
+    def deleteChild(self,node):
+        self.__childList.remove(node)

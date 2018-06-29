@@ -3,6 +3,10 @@
 from Method import Method
 import re
 from Node import Node
+
+
+
+
 class Path:
 
     def __init__(self):
@@ -15,7 +19,35 @@ class Path:
         
     '''
     def handlePathNode(self,lines=[]):
-        print lines
+        self.__makeCallGraph(lines)
+        self.__handleStartActivity()
+        self.__handleStartService()
+        self.__handleBroadcast()
+        self.__handlehanler()
+        self.__printTree()
+
+
+    '''
+    如果出现修改beforeonCreate的情况
+    '''
+    def __handleStartActivity(self):
+        for key in self.__nodes.keys():
+            if self.__nodes[key].getMethodName() == 'beforeonCreate':
+                nnode = self.__nodes[key]
+                nnode.getParent().addChildList(nnode.getChildList())
+                nnode.getParent().deleteChild(nnode)
+                self.__nodes.pop(key)
+                break
+    def __handleStartService(self):
+        pass
+
+    def __handleBroadcast(self):
+        pass
+
+    def __handlehanler(self):
+        pass
+
+    def __makeCallGraph(self,lines):
         for index in range(len(lines)):
             if lines[index].startswith('===>'):
                 classname ,methodname = self.__patternMethod(lines[index][4:])
@@ -55,6 +87,8 @@ class Path:
                     parentNode.addChild(childNode)
             if lines[index].startswith('------>'):
                 pass
+
+    def __printTree(self):
         for key in self.__nodes.keys():
             print self.__nodes[key].getClassName(),self.__nodes[key].getMethodName()
             for nnode in self.__nodes[key].getChildList():
@@ -128,3 +162,4 @@ class Path:
             if position == -1:
                 return last_position
             last_position = position
+
