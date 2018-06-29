@@ -144,12 +144,11 @@ def findSources(file):
     调用路径上的每一个方法和方法所在的method
 '''
 def getPaths(file):
-    path = Path()
-
     f = open(file,'r')
     line = f.readline()
     path = None
     while line:
+        isreadflag = False
         if line.startswith('==========-============='):
             path = Path()
             Paths.append(path)
@@ -166,8 +165,10 @@ def getPaths(file):
             while line and (not line.startswith('==========-=============')):
                 lines.append(line)
                 line = f.readline()
+                isreadflag = True
             path.handlePathNode(lines)
-        line = f.readline()
+        if not isreadflag:
+            line = f.readline()
 if '__main__' == __name__ :
     #smaliFiles = getallSmaliFiles(unicode(sougouPath,"utf-8"),[])
     #decode('gbk').encode('UTF-8') 打印中文
